@@ -14,6 +14,7 @@ class Character {
     public:
         Character();
         ~Character();
+        void reviveCharacter();
 
         bool isAlive = true;
         sf::Texture _texture;

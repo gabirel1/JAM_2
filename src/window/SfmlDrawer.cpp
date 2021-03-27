@@ -33,14 +33,10 @@ void SfmlDrawer::gameLoop()
     while (isOpen())
     {
         clear_screen();
-        sf::Time time = _clock.getElapsedTime();
-        if (time.asSeconds() > 0.5) {
-            _scoreValue++;
-            _clock.restart();
-        }
         updateCharacterPos();
         drawScoreBoard();
-        _window.draw(_character->_sprite);
+        (_character->isAlive == true) ? _window.draw(_character->_sprite) : (void)0; // degueulasse
+
     }
 }
 
@@ -54,10 +50,10 @@ void SfmlDrawer::checkClick(sf::Vector2i _mousePos, sf::Vector2f _characterPos, 
     if ((_mousePos.x >= posMinX && _mousePos.x <= posMaxX)
     && (_mousePos.y >= posMinY && _mousePos.y <= posMaxY))
     {
-        std::cout << "mouse : " << _mousePos.x << " " << _mousePos.y << " | " << posMinX << " && " << posMaxX << " touched" << std::endl;
+        _scoreValue++;
+        _character->isAlive = false;
         return;
     }
-    std::cout << "mouse : " << _mousePos.x << " " << _mousePos.y << " | " << posMinX << " && " << posMaxX << " not touched" << std::endl;
 }
 
 void SfmlDrawer::updateCharacterPos()
@@ -68,6 +64,7 @@ void SfmlDrawer::updateCharacterPos()
         float y = rand() % 500;
         _character->_pos = {x, y};
         _character->_sprite.setPosition(x, y);
+        _character->reviveCharacter();
         _clockCharacter.restart();
     }
 }
@@ -85,10 +82,19 @@ void SfmlDrawer::drawScoreBoard()
     streamObj << _scoreValue;
     std::string Score = streamObj.str();
 
-    _score.setCharacterSize(20);
+    _score.setCharacterSize(40);
     _score.setFillColor(sf::Color::Red);
     _score.setString(Score);
-    _score.setPosition(960, 540);
+
+    sf::Vector2u winSize = _window.getSize();
+    float sizeX = winSize.x;
+
+    sf::FloatRect textRect = _score.getLocalBounds();
+    _score.setOrigin(textRect.left + (textRect.width / 2.0f), textRect.top + (textRect.height / 2.0f));
+
+    float posX = (sizeX / 2);
+
+    _score.setPosition(posX, 40);
     _window.draw(_score);
 }
 
@@ -105,7 +111,7 @@ void SfmlDrawer::clear_screen()
         handle_keys();
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
-            checkClick(mousePos, _character->_pos, _character->_texture.getSize());
+            (_character->isAlive == true) ? checkClick(mousePos, _character->_pos, _character->_texture.getSize()) : (void)0;
         }
         if (_event.type == sf::Event::Closed)
             _window.close();

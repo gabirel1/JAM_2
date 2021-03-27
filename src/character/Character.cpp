@@ -23,3 +23,8 @@ Character::Character()
 Character::~Character()
 {
 }
+
+void Character::reviveCharacter()
+{
+    isAlive = true;
+}

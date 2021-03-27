@@ -4,7 +4,7 @@ SRC =	src/main.cpp					\
 
 CC = g++
 
-NAME = sudoku_solver
+NAME = gpasvu
 
 OBJ = $(SRC:.cpp=.o)
 
