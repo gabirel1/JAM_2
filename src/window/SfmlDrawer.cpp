@@ -16,16 +16,33 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
         std::cerr << "error while loading font" << std::endl;
         return;
     }
+    if (!_mouseTexture.loadFromFile("assets/crossair.png")) {
+        std::cerr << "error while loading font" << std::endl;
+        return;
+    }
+    sf::Sprite temp(_mouseTexture);
+    _mouseSprite = temp;
+    sf::Vector2u _size = _mouseTexture.getSize();
+    _mouseSprite.setOrigin(_size.x / 2, _size.y / 2);
+    _window.setMouseCursorVisible(false);
     _score.setFont(_font);
-    _character = new Character();
-    _character->_pos = {500, 500};
-    _character->_sprite.setPosition(_character->_pos);
+    _character.push_back(new Character("assets/nyanCatSprite.png", {500, 500}));
+    _character.push_back(new Character("assets/Homer.png", {500, 500}));
 }
 
 SfmlDrawer::~SfmlDrawer()
 {
-    if (!_character)
-        delete(_character);
+    for (auto const &it: _character) {
+        if (!it)
+            delete(it);
+    }
+}
+
+void SfmlDrawer::updateMouseSpritePos()
+{
+    sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
+    _mouseSprite.setPosition(mousePos.x, mousePos.y);
+    _window.draw(_mouseSprite);
 }
 
 void SfmlDrawer::gameLoop()
@@ -34,13 +51,15 @@ void SfmlDrawer::gameLoop()
     {
         clear_screen();
         updateCharacterPos();
+        for (auto const &it: _character) {
+            (it->isAlive == true) ? _window.draw(it->_sprite) : (void)0; // degueulasse
+        }
         drawScoreBoard();
-        (_character->isAlive == true) ? _window.draw(_character->_sprite) : (void)0; // degueulasse
-
+        updateMouseSpritePos();
     }
 }
 
-void SfmlDrawer::checkClick(sf::Vector2i _mousePos, sf::Vector2f _characterPos, sf::Vector2u size)
+void SfmlDrawer::checkClick(sf::Vector2i _mousePos, sf::Vector2f _characterPos, sf::Vector2u size, Character &character)
 {
     float posMinX = _characterPos.x - (size.x / 2);
     float posMinY = _characterPos.y - (size.y / 2);
@@ -51,21 +70,24 @@ void SfmlDrawer::checkClick(sf::Vector2i _mousePos, sf::Vector2f _characterPos, 
     && (_mousePos.y >= posMinY && _mousePos.y <= posMaxY))
     {
         _scoreValue++;
-        _character->isAlive = false;
+        character.isAlive = false;
         return;
     }
 }
 
 void SfmlDrawer::updateCharacterPos()
 {
-    sf::Time time = _clockCharacter.getElapsedTime();
-    if (time.asMilliseconds() > 700) {
-        float x = rand() % 500;
-        float y = rand() % 500;
-        _character->_pos = {x, y};
-        _character->_sprite.setPosition(x, y);
-        _character->reviveCharacter();
-        _clockCharacter.restart();
+    for (auto const &it: _character) {
+        sf::Time time = it->_clockCharacter.getElapsedTime();
+        if (time.asMilliseconds() > 700) {
+            float x = rand() % (1920 - (it->_texture.getSize().x) - 50) + (it->_texture.getSize().x / 2);
+            float y = rand() % (1080 - (it->_texture.getSize().y) - 50) + (it->_texture.getSize().y / 2);
+
+            it->_pos = {x, y};
+            it->_sprite.setPosition(x, y);
+            it->reviveCharacter();
+            it->_clockCharacter.restart();
+        }
     }
 }
 
@@ -82,7 +104,7 @@ void SfmlDrawer::drawScoreBoard()
     streamObj << _scoreValue;
     std::string Score = streamObj.str();
 
-    _score.setCharacterSize(40);
+    _score.setCharacterSize(60);
     _score.setFillColor(sf::Color::Red);
     _score.setString(Score);
 
@@ -111,7 +133,9 @@ void SfmlDrawer::clear_screen()
         handle_keys();
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
-            (_character->isAlive == true) ? checkClick(mousePos, _character->_pos, _character->_texture.getSize()) : (void)0;
+            for (const auto &it: _character) {
+                (it->isAlive == true) ? checkClick(mousePos, it->_pos, it->_texture.getSize(), *it) : (void)0;
+            }
         }
         if (_event.type == sf::Event::Closed)
             _window.close();

@@ -7,9 +7,9 @@
 
 #include "Character.hpp"
 
-Character::Character()
+Character::Character(const std::string &_filepath, sf::Vector2f pos)
 {
-    if (!_texture.loadFromFile("assets/nyanCatSprite.png")) {
+    if (!_texture.loadFromFile(_filepath)) {
         std::cerr << "error while loading picture" << std::endl;
         return;
     }
@@ -17,7 +17,8 @@ Character::Character()
     _sprite = temp;
     sf::Vector2u _size = _texture.getSize();
     _sprite.setOrigin(_size.x / 2, _size.y / 2);
-    _pos = {-260, -260};
+    _pos = pos;
+    _sprite.setPosition(pos);
 }
 
 Character::~Character()

@@ -12,7 +12,7 @@
 
 class Character {
     public:
-        Character();
+        Character(const std::string &_filepath, sf::Vector2f pos);
         ~Character();
         void reviveCharacter();
 
@@ -20,6 +20,7 @@ class Character {
         sf::Texture _texture;
         sf::Sprite _sprite;
         sf::Vector2f _pos;
+        sf::Clock _clockCharacter;
     protected:
     private:
 };
