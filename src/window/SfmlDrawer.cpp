@@ -18,6 +18,8 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
     }
     _score.setFont(_font);
     _character = new Character();
+    _character->_pos = {500, 500};
+    _character->_sprite.setPosition(_character->_pos);
 }
 
 SfmlDrawer::~SfmlDrawer()
@@ -77,5 +79,4 @@ void SfmlDrawer::clear_screen()
     }
     _window.display();
     _window.clear();
-
 }
