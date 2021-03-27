@@ -15,10 +15,12 @@ class Character {
         Character();
         ~Character();
 
+        bool isAlive = true;
+        sf::Texture _texture;
+        sf::Sprite _sprite;
+        sf::Vector2f _pos;
     protected:
     private:
-        sf::Texture _koala_texture;
-        sf::Sprite _koala_picture;
 };
 
 #endif /* !CHARACTER_HPP_ */

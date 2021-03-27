@@ -31,7 +31,7 @@ class SfmlDrawer {
         sf::Clock _clockCharacter;
         sf::Text _score;
         double _scoreValue = 0;
-        Character _character();
+        Character *_character;
 };
 
 #endif /* !SFMLDRAWER_HPP_ */

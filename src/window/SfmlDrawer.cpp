@@ -17,10 +17,13 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
         return;
     }
     _score.setFont(_font);
+    _character = new Character();
 }
 
 SfmlDrawer::~SfmlDrawer()
 {
+    if (!_character)
+        delete(_character);
 }
 
 void SfmlDrawer::gameLoop()
@@ -34,6 +37,7 @@ void SfmlDrawer::gameLoop()
             _clock.restart();
         }
         drawScoreBoard();
+        _window.draw(_character->_sprite);
     }
 }
 
