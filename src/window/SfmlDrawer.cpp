@@ -59,6 +59,7 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
     _score.setFont(_font);
     _lifeRemaining.setFont(_font);
     _looseText.setFont(_font);
+    _looseText2.setFont(_font);
     _menuText.setFont(_font);
     _menuText2.setFont(_font);
 
@@ -141,18 +142,37 @@ void SfmlDrawer::looseScreen()
     std::string Score = streamObj.str();
 
     std::string toPrint = (_isEnglish == true) ? ("\t\tYou Lost.\nWith a score of : " + Score) : ("\tVous avez perdu.\nAvec un score de : " + Score);
+
+    std::string toPrint2 = (_isEnglish == true) ? ("Press R to restart the game") : ("Appuyez sur R pour relancer la partie");
+
     _looseText.setCharacterSize(160);
     _looseText.setFillColor(sf::Color::Red);
     _looseText.setString(toPrint);
     sf::FloatRect textRect = _looseText.getLocalBounds();
     _looseText.setOrigin(textRect.left + (textRect.width / 2.0f), textRect.top + (textRect.height / 2.0f));
 
+    _looseText2.setCharacterSize(60);
+    _looseText2.setFillColor(sf::Color::Red);
+    _looseText2.setString(toPrint2);
+    sf::FloatRect textRect2 = _looseText2.getLocalBounds();
+    _looseText2.setOrigin(textRect2.left + (textRect2.width / 2.0f), textRect2.top + (textRect2.height / 2.0f));
+
+
     sf::Vector2u winSize = _window.getSize();
     float sizeX = winSize.x;
     float sizeY = winSize.y;
     _looseText.setPosition(sizeX / 2, sizeY / 2);
+    _looseText2.setPosition(sizeX / 2, ((sizeY / 1.3)));
 
     _window.draw(_looseText);
+
+    sf::Time time = _clock.getElapsedTime();
+    if (time.asMilliseconds() < 1000 && time.asMilliseconds() > 500) {
+        _window.draw(_looseText2);
+    } else if (time.asMilliseconds() > 1000) {
+        _clock.restart();
+    }
+    // _window.draw(_looseText2);
 }
 
 void SfmlDrawer::gameLoop()
@@ -284,6 +304,12 @@ void SfmlDrawer::handle_keys()
         _window.close();
     if (_isMenu == true && _event.type == sf::Event::KeyReleased && _event.key.code == sf::Keyboard::Enter) {
         _isMenu = false;
+    }
+    if (_isMenu == false && _isPlaying == false && _event.type == sf::Event::KeyReleased && _event.key.code == sf::Keyboard::R) {
+        _life = 6;
+        _speed = 1400;
+        _scoreValue = 0.0;
+        _isPlaying = true;
     }
 }
 

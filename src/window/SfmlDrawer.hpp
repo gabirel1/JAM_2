@@ -41,6 +41,7 @@ class SfmlDrawer {
         sf::Text _score;
         sf::Text _lifeRemaining;
         sf::Text _looseText;
+        sf::Text _looseText2;
         sf::Text _menuText;
         sf::Text _menuText2;
 
