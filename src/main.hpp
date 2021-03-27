@@ -17,7 +17,9 @@
 #include <map>
 #include <sstream>
 #include <iomanip>
+#include <cmath>
 #include <vector>
 #include "window/SfmlDrawer.hpp"
 #include "character/Character.hpp"
+
 #endif /* !MAIN_HPP_ */

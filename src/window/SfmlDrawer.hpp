@@ -22,19 +22,30 @@ class SfmlDrawer {
         void handle_keys();
         void updateCharacterPos();
         void updateMouseSpritePos();
-        void checkClick(sf::Vector2i _mousePos, sf::Vector2f _characterPos, sf::Vector2u size, Character &character);
+        bool checkClick(sf::Vector2i _mousePos, sf::Vector2f _characterPos, sf::Vector2u size, Character &character);
         bool isOpen();
         void drawScoreBoard();
+        void handleSpeed();
+        void drawLife();
+        void looseScreen();
     protected:
     private:
         sf::RenderWindow _window;
         sf::Event _event;
         sf::Font _font;
         sf::Text _score;
+        sf::Text _lifeRemaining;
+        sf::Text _looseText;
         sf::Texture _mouseTexture;
         sf::Sprite _mouseSprite;
+        sf::Texture _heartTexture;
+        sf::Sprite _heartSprite;
         double _scoreValue = 0;
-        // Character *_character;
+        int _life = 6;
+        int _speed = 1400;
+        bool _isMenue = false;
+        bool _isPlaying = true;
+        bool _isEnglish = true;
         std::vector<Character *>_character;
 };
 
