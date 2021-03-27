@@ -24,6 +24,16 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
         std::cerr << "error while loading font" << std::endl;
         return;
     }
+    if (!_frenchTexture.loadFromFile("assets/frenchFlag.jpg")) {
+        std::cerr << "error while loading font" << std::endl;
+        return;
+    }
+    if (!_americanTexture.loadFromFile("assets/americanFlag.png")) {
+        std::cerr << "error while loading font" << std::endl;
+        return;
+    }
+
+
     sf::Sprite temp(_mouseTexture);
     _mouseSprite = temp;
     sf::Vector2u _size = _mouseTexture.getSize();
@@ -35,9 +45,23 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
     sf::Vector2u _size2 = _heartTexture.getSize();
     _heartSprite.setOrigin(_size2.x / 2, _size2.y / 2);
 
+    sf::Sprite tmp1(_frenchTexture);
+    sf::Sprite tmp2(_americanTexture);
+    _frenchSprite = tmp1;
+    _americanSprite = tmp2;
+
+    sf::Vector2u _size3 = _frenchTexture.getSize();
+    _frenchSprite.setOrigin(_size3.x / 2, _size3.y / 2);
+
+    sf::Vector2u _size4 = _americanTexture.getSize();
+    _americanSprite.setOrigin(_size4.x / 2, _size4.y / 2);
+
     _score.setFont(_font);
     _lifeRemaining.setFont(_font);
     _looseText.setFont(_font);
+    _menuText.setFont(_font);
+    _menuText2.setFont(_font);
+
     _character.push_back(new Character("assets/nyanCatSprite.png", {500, 500}));
     _character.push_back(new Character("assets/Homer.png", {500, 500}));
     _character.push_back(new Character("assets/futurama.png", {500, 500}));
@@ -49,6 +73,47 @@ SfmlDrawer::~SfmlDrawer()
         if (!it)
             delete(it);
     }
+}
+
+void SfmlDrawer::displayMenu()
+{
+    _frenchSprite.setPosition(1800, 950);
+    _americanSprite.setPosition(1600, 950);
+
+    _window.draw(_frenchSprite);
+    _window.draw(_americanSprite);
+
+    std::string toPrint = (_isEnglish == true) ? ("Welcome to GpasVu the game !") : ("Bienvue sur GpasVu le jeu !");
+    std::string toPrint2 = (_isEnglish == true) ? ("Press ENTER to start") : ("Appuyez sur ENTREE pour commencer");
+    _menuText.setCharacterSize(60);
+    _menuText.setFillColor(sf::Color::Red);
+    _menuText.setString(toPrint);
+    sf::FloatRect textRect = _menuText.getLocalBounds();
+    _menuText.setOrigin(textRect.left + (textRect.width / 2.0f), textRect.top + (textRect.height / 2.0f));
+
+    sf::Vector2u winSize = _window.getSize();
+    float sizeX = winSize.x;
+    float sizeY = winSize.y;
+    _menuText.setPosition(sizeX / 2, sizeY / 2);
+
+    _menuText2.setCharacterSize(60);
+    _menuText2.setFillColor(sf::Color::Red);
+    _menuText2.setString(toPrint2);
+    sf::FloatRect textRect2 = _menuText2.getLocalBounds();
+    _menuText2.setOrigin(textRect2.left + (textRect2.width / 2.0f), textRect2.top + (textRect2.height / 2.0f));
+
+    _menuText2.setPosition(sizeX / 2, (sizeY / 2) + 200);
+
+    sf::Time time = _clock.getElapsedTime();
+    if (time.asMilliseconds() < 1000 && time.asMilliseconds() > 500) {
+        _window.draw(_menuText2);
+    } else if (time.asMilliseconds() > 1000) {
+        _clock.restart();
+    }
+
+
+    _window.draw(_menuText);
+    // _window.draw(_menuText2);
 }
 
 void SfmlDrawer::updateMouseSpritePos()
@@ -64,7 +129,6 @@ void SfmlDrawer::handleSpeed()
     if (tmp != _scoreValue && std::fmod(_scoreValue, 10) == 0.0 && _speed > 0) {
         _speed -= 200;
         tmp = _scoreValue;
-        // std::cout << "changing speed" << std::endl;
     }
 }
 
@@ -96,8 +160,8 @@ void SfmlDrawer::gameLoop()
     while (isOpen())
     {
         clear_screen();
-        if (_isMenue == true) {
-
+        if (_isMenu == true) {
+            displayMenu();
         } else {
             if (_isPlaying == true) {
                 updateCharacterPos();
@@ -113,6 +177,20 @@ void SfmlDrawer::gameLoop()
         }
         updateMouseSpritePos();
     }
+}
+
+bool SfmlDrawer::checkClickMenu(sf::Vector2i _mousePos, sf::Vector2f pos, sf::Vector2u size)
+{
+    float posMinX = pos.x - (size.x / 2);
+    float posMinY = pos.y - (size.y / 2);
+    float posMaxX = pos.x + (size.x / 2);
+    float posMaxY = pos.y + (size.y / 2);
+    if ((_mousePos.x >= posMinX && _mousePos.x <= posMaxX)
+    && (_mousePos.y >= posMinY && _mousePos.y <= posMaxY))
+    {
+        return true;
+    }
+    return false;
 }
 
 bool SfmlDrawer::checkClick(sf::Vector2i _mousePos, sf::Vector2f _characterPos, sf::Vector2u size, Character &character)
@@ -204,6 +282,9 @@ void SfmlDrawer::handle_keys()
 {
     if (_event.type == sf::Event::KeyReleased && _event.key.code == sf::Keyboard::Escape)
         _window.close();
+    if (_isMenu == true && _event.type == sf::Event::KeyReleased && _event.key.code == sf::Keyboard::Enter) {
+        _isMenu = false;
+    }
 }
 
 void SfmlDrawer::clear_screen()
@@ -215,15 +296,23 @@ void SfmlDrawer::clear_screen()
         handle_keys();
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
-            if (_isPlaying == true) {
+            if (_isPlaying == true && _isMenu == false) {
                 for (const auto &it: _character) {
                     if (checkClick(mousePos, it->_pos, it->_texture.getSize(), *it) == true) {
                         wasTouched = true;
                         break;
                     }
                 }
-                if (wasTouched == false)
+                if (wasTouched == false) {
+                    std::cout << "less one life" << std::endl;
                     _life--;
+                }
+            } else if (_isMenu == true) {
+                if (checkClickMenu(mousePos, _frenchSprite.getPosition(), _frenchTexture.getSize()) == true) {
+                    _isEnglish = false;
+                } else if (checkClickMenu(mousePos, _americanSprite.getPosition(), _americanTexture.getSize()) == true) {
+                    _isEnglish = true;
+                }
             }
         }
         if (_event.type == sf::Event::Closed)
