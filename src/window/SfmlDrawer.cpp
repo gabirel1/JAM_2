@@ -28,6 +28,7 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
     _score.setFont(_font);
     _character.push_back(new Character("assets/nyanCatSprite.png", {500, 500}));
     _character.push_back(new Character("assets/Homer.png", {500, 500}));
+    _character.push_back(new Character("assets/futurama.png", {500, 500}));
 }
 
 SfmlDrawer::~SfmlDrawer()
