@@ -44,6 +44,22 @@ void SfmlDrawer::gameLoop()
     }
 }
 
+void SfmlDrawer::checkClick(sf::Vector2i _mousePos, sf::Vector2f _characterPos, sf::Vector2u size)
+{
+    float posMinX = _characterPos.x - (size.x / 2);
+    float posMinY = _characterPos.y - (size.y / 2);
+    float posMaxX = _characterPos.x + (size.x / 2);
+    float posMaxY = _characterPos.y + (size.y / 2);
+
+    if ((_mousePos.x >= posMinX && _mousePos.x <= posMaxX)
+    && (_mousePos.y >= posMinY && _mousePos.y <= posMaxY))
+    {
+        std::cout << "mouse : " << _mousePos.x << " " << _mousePos.y << " | " << posMinX << " && " << posMaxX << " touched" << std::endl;
+        return;
+    }
+    std::cout << "mouse : " << _mousePos.x << " " << _mousePos.y << " | " << posMinX << " && " << posMaxX << " not touched" << std::endl;
+}
+
 void SfmlDrawer::updateCharacterPos()
 {
     sf::Time time = _clockCharacter.getElapsedTime();
@@ -87,6 +103,10 @@ void SfmlDrawer::clear_screen()
     while (_window.pollEvent(_event))
     {
         handle_keys();
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
+            checkClick(mousePos, _character->_pos, _character->_texture.getSize());
+        }
         if (_event.type == sf::Event::Closed)
             _window.close();
     }

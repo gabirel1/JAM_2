@@ -21,6 +21,7 @@ class SfmlDrawer {
         void clear_screen();
         void handle_keys();
         void updateCharacterPos();
+        void checkClick(sf::Vector2i _mousePos, sf::Vector2f _characterPos, sf::Vector2u size);
         bool isOpen();
         void drawScoreBoard();
     protected:
