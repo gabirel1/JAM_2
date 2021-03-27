@@ -11,6 +11,7 @@ int main(int ac, char *av[])
 {
     (void)ac;
     (void)av;
+    srand (time(NULL));
     SfmlDrawer windows;
     windows.gameLoop();
     return 0;

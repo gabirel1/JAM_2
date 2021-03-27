@@ -20,6 +20,7 @@ class SfmlDrawer {
         void gameLoop();
         void clear_screen();
         void handle_keys();
+        void updateCharacterPos();
         bool isOpen();
         void drawScoreBoard();
     protected:

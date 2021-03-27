@@ -38,8 +38,21 @@ void SfmlDrawer::gameLoop()
             _scoreValue++;
             _clock.restart();
         }
+        updateCharacterPos();
         drawScoreBoard();
         _window.draw(_character->_sprite);
+    }
+}
+
+void SfmlDrawer::updateCharacterPos()
+{
+    sf::Time time = _clockCharacter.getElapsedTime();
+    if (time.asMilliseconds() > 700) {
+        float x = rand() % 500;
+        float y = rand() % 500;
+        _character->_pos = {x, y};
+        _character->_sprite.setPosition(x, y);
+        _clockCharacter.restart();
     }
 }
 
