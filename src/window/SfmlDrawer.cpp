@@ -32,6 +32,10 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
         std::cerr << "error while loading font" << std::endl;
         return;
     }
+    if (!_backgroundTexture.loadFromFile("assets/background.png")) {
+        std::cerr << "error while loading font" << std::endl;
+        return;
+    }
 
     sf::Sprite temp(_mouseTexture);
     _mouseSprite = temp;
@@ -54,6 +58,12 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
 
     sf::Vector2u _size4 = _americanTexture.getSize();
     _americanSprite.setOrigin(_size4.x / 2, _size4.y / 2);
+
+    sf::Sprite tmp5(_backgroundTexture);
+    _backgroundSprite = tmp5;
+    sf::Vector2u _size5 = _backgroundTexture.getSize();
+    _backgroundSprite.setOrigin(_size5.x / 2, _size5.y / 2);
+    _backgroundSprite.setPosition(_window.getSize().x / 2, _window.getSize().y / 2);
 
     _score.setFont(_font);
     _lifeRemaining.setFont(_font);
@@ -209,6 +219,7 @@ void SfmlDrawer::gameLoop()
             } else {
                 looseScreen();
             }
+            _window.draw(_backgroundSprite);
             drawScoreBoard();
             drawLife();
         }

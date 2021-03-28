@@ -8,7 +8,7 @@ NAME = gpasvu
 
 OBJ = $(SRC:.cpp=.o)
 
-SFMLFLAG = -lsfml-graphics -lsfml-window -lsfml-system
+SFMLFLAG = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 CPPFLAGS	=	-W -Wall -Wextra
 

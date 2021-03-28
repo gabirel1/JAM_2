@@ -57,6 +57,10 @@ class SfmlDrawer {
         sf::Texture _americanTexture;
         sf::Sprite _americanSprite;
 
+        sf::Texture _backgroundTexture;
+        sf::Sprite _backgroundSprite;
+        sf::Sound _fireSound;
+
         double _scoreValue = 0;
         int _life = 6;
         int _speed = 1400;
