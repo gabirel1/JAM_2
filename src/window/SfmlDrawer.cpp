@@ -17,23 +17,27 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
         return;
     }
     if (!_mouseTexture.loadFromFile("assets/crossair.png")) {
-        std::cerr << "error while loading font" << std::endl;
+        std::cerr << "error while loading picture" << std::endl;
         return;
     }
     if (!_heartTexture.loadFromFile("assets/heart.png")) {
-        std::cerr << "error while loading font" << std::endl;
+        std::cerr << "error while loading picture" << std::endl;
         return;
     }
     if (!_frenchTexture.loadFromFile("assets/frenchFlag.jpg")) {
-        std::cerr << "error while loading font" << std::endl;
+        std::cerr << "error while loading picture" << std::endl;
         return;
     }
     if (!_americanTexture.loadFromFile("assets/americanFlag.png")) {
-        std::cerr << "error while loading font" << std::endl;
+        std::cerr << "error while loading picture" << std::endl;
         return;
     }
     if (!_backgroundTexture.loadFromFile("assets/background.png")) {
-        std::cerr << "error while loading font" << std::endl;
+        std::cerr << "error while loading picture" << std::endl;
+        return;
+    }
+    if (!_fireSoundBuffer.loadFromFile("assets/blasterSound.ogg")) {
+        std::cerr << "error while loading sound" << std::endl;
         return;
     }
 
@@ -81,6 +85,9 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
     _frenchAdvices.push_back("\"Fais ce que tu aimes. Tout le reste est secondaire\"");
     _americanAdvices.push_back("\"Don't believe everything you hear\"");
     _frenchAdvices.push_back("\"ne crois pas tout ce que tu entends\"");
+
+    sf::Sound sound(_fireSoundBuffer);
+    _fireSound = sound;
 }
 
 SfmlDrawer::~SfmlDrawer()
@@ -216,10 +223,10 @@ void SfmlDrawer::gameLoop()
                     (it->isAlive == true) ? _window.draw(it->_sprite) : (void)0; // degueulasse
                 }
                 handleSpeed();
+                _window.draw(_backgroundSprite);
             } else {
                 looseScreen();
             }
-            _window.draw(_backgroundSprite);
             drawScoreBoard();
             drawLife();
         }
@@ -351,6 +358,7 @@ void SfmlDrawer::clear_screen()
         handle_keys();
         if (_event.type == sf::Event::MouseButtonPressed) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
+            _fireSound.play();
             if (_isPlaying == true && _isMenu == false) {
                 for (const auto &it: _character) {
                     if (checkClick(mousePos, it->_pos, it->_texture.getSize(), *it) == true) {

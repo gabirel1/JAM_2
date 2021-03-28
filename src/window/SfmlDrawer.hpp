@@ -59,6 +59,8 @@ class SfmlDrawer {
 
         sf::Texture _backgroundTexture;
         sf::Sprite _backgroundSprite;
+
+        sf::SoundBuffer _fireSoundBuffer;
         sf::Sound _fireSound;
 
         double _scoreValue = 0;
