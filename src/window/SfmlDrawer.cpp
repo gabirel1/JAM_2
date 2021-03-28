@@ -88,6 +88,7 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
 
     sf::Sound sound(_fireSoundBuffer);
     _fireSound = sound;
+    _fireSound.setVolume(10);
 }
 
 SfmlDrawer::~SfmlDrawer()
@@ -293,7 +294,7 @@ void SfmlDrawer::drawLife()
     std::string life = streamObj.str();
 
     _lifeRemaining.setCharacterSize(60);
-    _lifeRemaining.setFillColor(sf::Color::White);
+    _lifeRemaining.setFillColor(sf::Color::Red);
     _lifeRemaining.setString(life);
     sf::FloatRect textRect = _lifeRemaining.getLocalBounds();
     _lifeRemaining.setOrigin(textRect.left + (textRect.width / 2.0f), textRect.top + (textRect.height / 2.0f));
