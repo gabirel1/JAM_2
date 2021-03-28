@@ -61,10 +61,16 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
     _looseText2.setFont(_font);
     _menuText.setFont(_font);
     _menuText2.setFont(_font);
+    _adviceText.setFont(_font);
 
     _character.push_back(new Character("assets/nyanCatSprite.png", {500, 500}));
     _character.push_back(new Character("assets/Homer.png", {500, 500}));
     _character.push_back(new Character("assets/futurama.png", {500, 500}));
+
+    _americanAdvices.push_back("\"Do what you love. Everything else is secondary\"");
+    _frenchAdvices.push_back("\"Fais ce que tu aimes. Tout le reste est secondaire\"");
+    _americanAdvices.push_back("\"Don't believe everything you hear\"");
+    _frenchAdvices.push_back("\"ne crois pas tout ce que tu entends\"");
 }
 
 SfmlDrawer::~SfmlDrawer()
@@ -83,7 +89,7 @@ void SfmlDrawer::displayMenu()
     _window.draw(_frenchSprite);
     _window.draw(_americanSprite);
 
-    std::string toPrint = (_isEnglish == true) ? ("Welcome to GpasVu the game !") : ("Bienvue sur GpasVu le jeu !");
+    std::string toPrint = (_isEnglish == true) ? ("Welcome to GpasVu the game !") : ("Bienvenue sur GpasVu le jeu !");
     std::string toPrint2 = (_isEnglish == true) ? ("Press ENTER to start") : ("Appuyez sur ENTREE pour commencer");
     _menuText.setCharacterSize(60);
     _menuText.setFillColor(sf::Color::Red);
@@ -113,7 +119,6 @@ void SfmlDrawer::displayMenu()
 
 
     _window.draw(_menuText);
-    // _window.draw(_menuText2);
 }
 
 void SfmlDrawer::updateMouseSpritePos()
@@ -134,6 +139,10 @@ void SfmlDrawer::handleSpeed()
 
 void SfmlDrawer::looseScreen()
 {
+    static int index = 0;
+    if (_wasAlreadyRand == false) {
+        index = rand() % _frenchAdvices.size();
+    }
     std::ostringstream streamObj;
     streamObj << std::fixed;
     streamObj << std::setprecision(0);
@@ -171,7 +180,16 @@ void SfmlDrawer::looseScreen()
     } else if (time.asMilliseconds() > 1000) {
         _clock.restart();
     }
-    // _window.draw(_looseText2);
+
+    _adviceText.setCharacterSize(60);
+    _adviceText.setFillColor(sf::Color::Red);
+    _adviceText.setString((_isEnglish == true) ? _americanAdvices[index] : _frenchAdvices[index]);
+    sf::FloatRect textRect3 = _adviceText.getLocalBounds();
+    _adviceText.setOrigin(textRect3.left + (textRect3.width / 2.0f), textRect3.top + (textRect3.height / 2.0f));
+    _adviceText.setPosition(sizeX / 2, ((sizeY / 1.15)));
+    _window.draw(_adviceText);
+
+    _wasAlreadyRand = true;
 }
 
 void SfmlDrawer::gameLoop()
@@ -309,6 +327,7 @@ void SfmlDrawer::handle_keys()
         _speed = 1400;
         _scoreValue = 0.0;
         _isPlaying = true;
+        _wasAlreadyRand = false;
     }
 }
 
@@ -329,7 +348,6 @@ void SfmlDrawer::clear_screen()
                     }
                 }
                 if (wasTouched == false) {
-                    std::cout << "less one life" << std::endl;
                     _life--;
                 }
             } else if (_isMenu == true) {

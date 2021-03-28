@@ -42,6 +42,7 @@ class SfmlDrawer {
         sf::Text _lifeRemaining;
         sf::Text _looseText;
         sf::Text _looseText2;
+        sf::Text _adviceText;
         sf::Text _menuText;
         sf::Text _menuText2;
 
@@ -62,8 +63,11 @@ class SfmlDrawer {
         bool _isMenu = true;
         bool _isPlaying = true;
         bool _isEnglish = true;
+        bool _wasAlreadyRand = false;
 
         std::vector<Character *>_character;
+        std::vector<std::string> _frenchAdvices;
+        std::vector<std::string> _americanAdvices;
 };
 
 #endif /* !SFMLDRAWER_HPP_ */
