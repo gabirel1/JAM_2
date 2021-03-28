@@ -33,7 +33,6 @@ SfmlDrawer::SfmlDrawer(): _window(sf::VideoMode(1920, 1080), "GPasVu Jam 2")
         return;
     }
 
-
     sf::Sprite temp(_mouseTexture);
     _mouseSprite = temp;
     sf::Vector2u _size = _mouseTexture.getSize();
@@ -320,7 +319,7 @@ void SfmlDrawer::clear_screen()
     while (_window.pollEvent(_event))
     {
         handle_keys();
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (_event.type == sf::Event::MouseButtonPressed) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
             if (_isPlaying == true && _isMenu == false) {
                 for (const auto &it: _character) {
