@@ -15,7 +15,7 @@ CPPFLAGS	=	-W -Wall -Wextra
 all : $(NAME)
 
 $(NAME) :	$(OBJ)
-	$(CC) $(CPPFLAGS) $(SFMLFLAG) $(SRC) -o $(NAME)
+			$(CC) -o $(NAME) $(OBJ) $(CPPFLAGS) $(SFMLFLAG)
 
 clean :
 	$(RM) $(OBJ)
